@@ -2,7 +2,8 @@ const logger = require('../modules/logger')
 const config = require('../utils/get-config');
 const check_admin = require('../utils/check-admin')
 const { MessageEmbed } = require('discord.js');
-const err_embed = require('../utils/error-embed')
+const err_embed = require('../utils/error-embed');
+const { resolve } = require('path');
 
 exports.run = async (client, message, args) => {
     try {
@@ -13,13 +14,28 @@ exports.run = async (client, message, args) => {
         }
         
         //vote
-        const [title, ...choices] = args
-            if (!title) return message.channel.send({content: 'タイトルを指定してください'})
-            const emojis = ['🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬', '🇭', '🇮', '🇯', '🇰', '🇱', '🇲', '🇳', '🇴', '🇵', '🇶', '🇷', '🇸', '🇹', '🇺', '🇻', '🇼', '🇽', '🇾', '🇿']
+        const [...choices] = args
+            //絵文字 ロール 
+            if (choices.length < 2 || choices.length %2 != 0)
+                return message.channel.send({content: `絵文字,ロールの組み合わせで入力`})
             
-            if (choices.length < 2 || choices.length > emojis.length)
-                return message.channel.send({content: `選択肢は最低2つ最大20個の範囲内で指定してください`})
-            
+            var role
+            var emojis
+            for (let i=0; i < choices.length/2; i+=2)
+                emojis[1] = choices[i]
+                role[1] = choices[i+1]
+                
+
+            //絵文字押されたら反応
+            //押された絵文字の番号
+            client.on('messageReactionAdd', (reaction, user) => {
+            var emojid = reaction.emoji.name
+            })
+
+            role[emojis.indexOf(emojid)]
+
+
+
             async function sent() {
                 const poll = await message.channel.send({
                     embeds: [
